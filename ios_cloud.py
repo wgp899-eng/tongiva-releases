@@ -55,6 +55,22 @@ def api(method,path,body=None,content_type='application/json'):
     return json.loads(value) if value else None
 
 def release():return api('GET','/repos/'+REPO+'/releases/tags/ios-updates')
+def feature_source():
+    name=os.environ.get('IOS_SOURCE_IPA','').strip()
+    digest=os.environ.get('IOS_SOURCE_SHA256','').strip().lower()
+    notes=os.environ.get('IOS_RELEASE_NOTES','').strip()
+    if not any([name,digest,notes]):return None
+    match=re.fullmatch(r'Tongiva-iOS-source-v([1-9]\d*)\.ipa',name)
+    if not match or not re.fullmatch('[a-f0-9]{64}',digest) or not notes or len(notes)>12000:
+        raise ValueError('Feature publication requires a versioned source IPA, SHA-256 and release notes')
+    asset=next((value for value in release()['assets'] if value['name']==name),None)
+    if not asset or asset.get('state')!='uploaded' or type(asset.get('size')) is not int or not 0<asset['size']<=512*1024*1024:
+        raise ValueError('Feature source asset is missing, incomplete or too large')
+    url=ASSET_ROOT+name
+    if asset.get('browser_download_url')!=url or asset.get('digest') not in [None,'sha256:'+digest]:
+        raise ValueError('Feature source asset URL or digest mismatch')
+    return {'name':name,'url':url,'sha256':digest,'size':asset['size'],'build':int(match.group(1)),'releaseNotes':notes}
+
 def upload(info,path,name=None):
     name=name or path.name
     existing=next((a for a in info['assets'] if a['name']==name),None)
@@ -106,7 +122,9 @@ def publish(base,new,output):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('command',choices=['check','publish']);args=parser.parse_args()
+    feature=feature_source()
     required,state,base=needed()
+    required=required or feature is not None
     if args.command=='check':
         output=os.environ.get('GITHUB_OUTPUT')
         if output:
@@ -115,19 +133,20 @@ def main():
     if not required:
         print('All registered devices are already supported; no package changed.');return
     with tempfile.TemporaryDirectory(prefix='tongiva-publish-') as tmp:
-        root=Path(tmp);ipa=root/base['name'];digest=hashlib.sha256();received=0
-        with OPEN(urllib.request.Request(base['url'],headers={'User-Agent':'Tongiva-Cloud-Publisher'}),timeout=90) as response,ipa.open('wb') as file:
+        source=feature or base
+        root=Path(tmp);ipa=root/source['name'];digest=hashlib.sha256();received=0
+        with OPEN(urllib.request.Request(source['url'],headers={'User-Agent':'Tongiva-Cloud-Publisher'}),timeout=90) as response,ipa.open('wb') as file:
             while chunk:=response.read(1048576):
                 received+=len(chunk)
-                if received>base['size']:raise ValueError('Source package exceeds advertised size')
+                if received>source['size']:raise ValueError('Source package exceeds advertised size')
                 file.write(chunk);digest.update(chunk)
-        if received!=base['size'] or digest.hexdigest()!=base['sha256']:raise ValueError('Source package digest mismatch')
+        if received!=source['size'] or digest.hexdigest()!=source['sha256']:raise ValueError('Source package digest mismatch')
         provision=bridge('profile '+state['registeredDeviceSetSHA256'])
         profile_path=root/'current.mobileprovision';profile_path.write_bytes(base64.b64decode(provision['profileBase64'],validate=True));profile_path.chmod(0o600)
-        notes=(base.get('releaseNotes') or '保留现有客户端功能，完善设备安装支持。').strip()+'\n更新设备安装支持。'
+        notes=feature['releaseNotes'] if feature else (base.get('releaseNotes') or '保留现有客户端功能，完善设备安装支持。').strip()+'\n更新设备安装支持。'
         reserved=[int(match.group(1)) for asset in release()['assets']
             if (match:=re.fullmatch(r'Tongiva-iOS-v(\d+)\.ipa',asset['name']))]
-        next_build=max([base['build'],*reserved])+1
+        next_build=max([base['build'],source['build'],*reserved])+1
         output=root/'output';new=resign(ipa,profile_path,output,next_build,notes)
         if new['deviceSetSHA256']!=provision['deviceSetSHA256'] or new['deviceCount']!=provision['deviceCount']:raise ValueError('Signed package contains a different device list')
         final=publish(base,new,output)
