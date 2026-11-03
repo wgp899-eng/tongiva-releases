@@ -1,0 +1,83 @@
+name: iOS automatic device signing
+run-name: iOS device signing · ${{ github.run_number }}
+on:
+  workflow_dispatch:
+    inputs:
+      device_hash:
+        description: Registered-device fingerprint (server supplied; no device identifiers)
+        required: false
+        type: string
+  schedule:
+    - cron: '*/5 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: tongiva-ios-device-publisher
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      needed: ${{ steps.check.outputs.needed }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Configure restricted distribution connection
+        env:
+          IOS_PUBLISH_SSH_KEY: ${{ secrets.IOS_PUBLISH_SSH_KEY }}
+        run: |
+          test -n "$IOS_PUBLISH_SSH_KEY"
+          umask 077
+          printf '%s\n' "$IOS_PUBLISH_SSH_KEY" > "$RUNNER_TEMP/ios-publish-key"
+          printf 'IOS_SSH_KEY_FILE=%s\n' "$RUNNER_TEMP/ios-publish-key" >> "$GITHUB_ENV"
+          printf 'IOS_SSH_KNOWN_HOSTS=%s\n' "$GITHUB_WORKSPACE/publisher_known_hosts" >> "$GITHUB_ENV"
+      - id: check
+        name: Check whether registered devices need a new signature
+        run: python3 ios_cloud.py check
+      - name: Remove temporary connection key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ios-publish-key"
+  sign-and-publish:
+    needs: check
+    if: needs.check.outputs.needed == 'true'
+    runs-on: macos-26
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Configure temporary signing keychain and restricted connection
+        env:
+          IOS_PUBLISH_SSH_KEY: ${{ secrets.IOS_PUBLISH_SSH_KEY }}
+          IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
+          IOS_P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+        run: |
+          test -n "$IOS_PUBLISH_SSH_KEY"
+          test -n "$IOS_DISTRIBUTION_P12"
+          test -n "$IOS_P12_PASSWORD"
+          umask 077
+          printf '%s\n' "$IOS_PUBLISH_SSH_KEY" > "$RUNNER_TEMP/ios-publish-key"
+          printf '%s' "$IOS_DISTRIBUTION_P12" | base64 --decode > "$RUNNER_TEMP/ios-signing.p12"
+          KEYCHAIN_PASSWORD="$(openssl rand -hex 32)"
+          printf '::add-mask::%s\n' "$KEYCHAIN_PASSWORD"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$RUNNER_TEMP/ios-signing.keychain-db"
+          security set-keychain-settings -lut 21600 "$RUNNER_TEMP/ios-signing.keychain-db"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$RUNNER_TEMP/ios-signing.keychain-db"
+          security import "$RUNNER_TEMP/ios-signing.p12" -P "$IOS_P12_PASSWORD" -A -t cert -f pkcs12 -k "$RUNNER_TEMP/ios-signing.keychain-db" >/dev/null 2>&1
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$RUNNER_TEMP/ios-signing.keychain-db" >/dev/null 2>&1
+          security list-keychains -d user -s "$RUNNER_TEMP/ios-signing.keychain-db"
+          printf 'IOS_SSH_KEY_FILE=%s\n' "$RUNNER_TEMP/ios-publish-key" >> "$GITHUB_ENV"
+          printf 'IOS_SSH_KNOWN_HOSTS=%s\n' "$GITHUB_WORKSPACE/publisher_known_hosts" >> "$GITHUB_ENV"
+      - name: Re-sign, validate, publish and synchronize the distribution server
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 ios_cloud.py publish
+      - name: Remove temporary signing credentials
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/ios-signing.keychain-db" 2>/dev/null || true
+          rm -f "$RUNNER_TEMP/ios-publish-key" "$RUNNER_TEMP/ios-signing.p12"
