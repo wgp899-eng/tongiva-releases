@@ -7,6 +7,18 @@ on:
         description: Registered-device fingerprint (server supplied; no device identifiers)
         required: false
         type: string
+      source_ipa:
+        description: Optional feature source asset (Tongiva-iOS-source-vNNN.ipa)
+        required: false
+        type: string
+      source_sha256:
+        description: SHA-256 of the feature source IPA (required with source_ipa)
+        required: false
+        type: string
+      release_notes:
+        description: Feature update notes (required with source_ipa)
+        required: false
+        type: string
   schedule:
     - cron: '*/5 * * * *'
 permissions:
@@ -35,6 +47,11 @@ jobs:
           printf 'IOS_SSH_KNOWN_HOSTS=%s\n' "$GITHUB_WORKSPACE/publisher_known_hosts" >> "$GITHUB_ENV"
       - id: check
         name: Check whether registered devices need a new signature
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          IOS_SOURCE_IPA: ${{ inputs.source_ipa || '' }}
+          IOS_SOURCE_SHA256: ${{ inputs.source_sha256 || '' }}
+          IOS_RELEASE_NOTES: ${{ inputs.release_notes || '' }}
         run: python3 ios_cloud.py check
       - name: Remove temporary connection key
         if: always()
@@ -75,6 +92,9 @@ jobs:
       - name: Re-sign, validate, publish and synchronize the distribution server
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          IOS_SOURCE_IPA: ${{ inputs.source_ipa || '' }}
+          IOS_SOURCE_SHA256: ${{ inputs.source_sha256 || '' }}
+          IOS_RELEASE_NOTES: ${{ inputs.release_notes || '' }}
         run: python3 ios_cloud.py publish
       - name: Remove temporary signing credentials
         if: always()
