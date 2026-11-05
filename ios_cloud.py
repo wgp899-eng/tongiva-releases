@@ -2,7 +2,7 @@
 from __future__ import annotations
 import argparse,base64,hashlib,json,os,re,signal,subprocess,tempfile,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
-from ios_resign import resign,ASSET_ROOT,BUNDLE_ID
+from ios_resign import resign,extract,ASSET_ROOT,BUNDLE_ID
 REPO='wgp899-eng/tongiva-releases'
 API='https://api.github.com'
 FEED=ASSET_ROOT+'ios-update.json'
@@ -55,10 +55,49 @@ def api(method,path,body=None,content_type='application/json'):
     return json.loads(value) if value else None
 
 def release():return api('GET','/repos/'+REPO+'/releases/tags/ios-updates')
+def source_configuration():
+    path=Path(__file__).with_name('ios-client-source.json')
+    config=json.loads(path.read_text())
+    if config.get('schemaVersion')!=1 or type(config.get('sourceBuild')) is not int or config['sourceBuild']<=0:
+        raise ValueError('Invalid configured iOS source')
+    for key,extension in [('sourceIPA','.ipa'),('sourceArchive','.zip')]:
+        asset=config[key]
+        expected=f"Tongiva-iOS-source-v{config['sourceBuild']}"+extension
+        if asset['name']!=expected or asset['url']!=ASSET_ROOT+expected or not re.fullmatch('[a-f0-9]{64}',asset['sha256']):
+            raise ValueError('Invalid configured iOS source asset')
+        if type(asset['size']) is not int or not 0<asset['size']<=512*1024*1024:raise ValueError('Invalid source asset size')
+    if not config.get('resourceSHA256') or not config.get('sourceSHA256'):raise ValueError('Source verification hashes are required')
+    return config
+
+def verify_source_snapshot(root,ipa,build):
+    import zipfile
+    config=source_configuration()
+    if build<config['sourceBuild']:raise ValueError('Package predates the configured client source')
+    with zipfile.ZipFile(ipa) as archive:
+        for name,digest in config['resourceSHA256'].items():
+            if hashlib.sha256(archive.read('Payload/LiaoqiaoWeb.app/'+name)).hexdigest()!=digest:
+                raise ValueError('Package differs from configured client resources: '+name)
+    asset=config['sourceArchive'];target=root/asset['name'];received=0;digest=hashlib.sha256()
+    with OPEN(urllib.request.Request(asset['url'],headers={'User-Agent':'Tongiva-Cloud-Publisher'}),timeout=90) as response,target.open('wb') as file:
+        while chunk:=response.read(1048576):
+            received+=len(chunk)
+            if received>asset['size']:raise ValueError('Source archive exceeds advertised size')
+            file.write(chunk);digest.update(chunk)
+    if received!=asset['size'] or digest.hexdigest()!=asset['sha256']:raise ValueError('Source archive digest mismatch')
+    destination=root/'source-code';extract(target,destination)
+    for name,digest in config['sourceSHA256'].items():
+        path=Path(name)
+        if path.is_absolute() or '..' in path.parts or hashlib.sha256((destination/path).read_bytes()).hexdigest()!=digest:
+            raise ValueError('Source snapshot file mismatch')
+    print('Verified client source snapshot: '+asset['name'])
+
 def feature_source():
     name=os.environ.get('IOS_SOURCE_IPA','').strip()
     digest=os.environ.get('IOS_SOURCE_SHA256','').strip().lower()
     notes=os.environ.get('IOS_RELEASE_NOTES','').strip()
+    if os.environ.get('IOS_USE_CONFIGURED_SOURCE')=='true':
+        if any([name,digest,notes]):raise ValueError('Choose configured source or explicit feature inputs')
+        config=source_configuration();name=config['sourceIPA']['name'];digest=config['sourceIPA']['sha256'];notes=config['releaseNotes']
     if not any([name,digest,notes]):return None
     match=re.fullmatch(r'Tongiva-iOS-source-v([1-9]\d*)\.ipa',name)
     if not match or not re.fullmatch('[a-f0-9]{64}',digest) or not notes or len(notes)>12000:
@@ -141,6 +180,7 @@ def main():
                 if received>source['size']:raise ValueError('Source package exceeds advertised size')
                 file.write(chunk);digest.update(chunk)
         if received!=source['size'] or digest.hexdigest()!=source['sha256']:raise ValueError('Source package digest mismatch')
+        verify_source_snapshot(root,ipa,source['build'])
         provision=bridge('profile '+state['registeredDeviceSetSHA256'])
         profile_path=root/'current.mobileprovision';profile_path.write_bytes(base64.b64decode(provision['profileBase64'],validate=True));profile_path.chmod(0o600)
         notes=feature['releaseNotes'] if feature else (base.get('releaseNotes') or '保留现有客户端功能，完善设备安装支持。').strip()+'\n更新设备安装支持。'
