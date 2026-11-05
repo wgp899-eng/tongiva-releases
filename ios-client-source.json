@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "sourceBuild": 113,
+  "sourceBuild": 115,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v113.ipa",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v113.ipa",
-    "sha256": "7d862694343934b4b92c7a0a32efa296b9546f29840ffe4cffb3e130330e7b7d",
-    "size": 93555210
+    "name": "Tongiva-iOS-source-v115.ipa",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v115.ipa",
+    "sha256": "44e010d0979ee7982a8f7323ea4118be268b085b62d7630b830ab7999310dd5f",
+    "size": 93565556
   },
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v113.zip",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v113.zip",
-    "sha256": "66ac1c2517fb2205c354af0a89cff11cb8a5f7d1afaff2a5b0cead34d06e0594",
-    "size": 99972688
+    "name": "Tongiva-iOS-source-v115.zip",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v115.zip",
+    "sha256": "1bfd3be0e1165f1237724f9dd47cc70a990ee393e4d58366c6f2d1d06eeefb56",
+    "size": 99977368
   },
-  "releaseNotes": "修复 Telegram 双向消息翻译：我方和对方发送的外语消息均保留原文，并在下方显示目标语言译文；翻译设置明确显示“翻译双方消息”，发送前翻译独立设置。同步当前苹果客户端的账号隔离、翻译设置实时同步、输入及 iPad 界面修复，保留 v112 的 LINE 联系人、手机备注及采集重连修复。支持 iPhone、iPad 覆盖安装。",
+  "releaseNotes": "新增 LINE、Telegram、WhatsApp 新消息 APNs 通知，提示对应平台收到新消息；点击通知打开对应平台。保留 Telegram 双向翻译、账号隔离、iPad 界面和 LINE 备注同步修复。需允许系统通知，支持现有登记 iPhone、iPad 覆盖安装。",
   "resourceSHA256": {
     "BundledWeb/app.js": "7d6a21881618d5a16846b4a839344c26ac8b570861bba3f603c085473379553e",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -62,10 +62,11 @@
     "BundledWeb/xls-reader.min.js": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
     "BundledWeb/xls-worker.js": "51703a14b3c465c2b37d280858375e9d8c5c4bb40cb8488dae8405111af3725e",
     "BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
-    "BundledWeb/manifest.json": "faf965b1de78374c397a69bbf329f53e77c50c0eeab6bdde15c4b1993c3986f3",
+    "BundledWeb/manifest.json": "92c0bdd036934b3dd2401d26b5af9f62da4e8a536e78d51a8e0ce01be69e6056",
     "TelegramWeb/index.html": "3f7be9b04fae1b9c71d736bcd031f57cc90514d5e75e547b924bcfa5d3db0b7b",
     "TelegramWeb/assets/main-Ce72leB9.js": "792d86c60af540870a019c96deb6b98c795521ff6120fcab5f988e0a1c043b5c",
-    "TelegramWeb/assets/main-VzR9MlAd.css": "1b8cff144e929b9927a2b3a2fe870f0631585810d3e987515dfb604a4040dbe9"
+    "TelegramWeb/assets/main-VzR9MlAd.css": "1b8cff144e929b9927a2b3a2fe870f0631585810d3e987515dfb604a4040dbe9",
+    "BundledWeb/ios-push-bridge.js": "e98012316679e181a75fc9cf2a4b01282c4190598958a37eccd5c4ab3e04c5ec"
   },
   "sourceSHA256": {
     "TelegramWebSource/src/components/middle/message/Message.tsx": "b1ee6aa87bb8f65caac30e81588e0917c0b1b4484c89a27bc209616215deb33f",
@@ -73,10 +74,16 @@
     "Sources/BundledWeb/telegram-web-translation.js": "b24fabd947e46b72a209a21bde2c832d6aed35b82f966a4ef93546005931fe62",
     "Sources/BundledWeb/telegram-translation-bridge.js": "ccf71893babd9f23b9477245cbc678000f8e4d1877da23e1218c9f888085c317",
     "Sources/BundledWeb/workbench-translation-bridge.js": "c7bfd1855fd4c9270414feb5b33d72324c3649d3b58ed88e4203a7e34f7a699f",
-    "Sources/BundledWeb/manifest.json": "faf965b1de78374c397a69bbf329f53e77c50c0eeab6bdde15c4b1993c3986f3",
+    "Sources/BundledWeb/manifest.json": "92c0bdd036934b3dd2401d26b5af9f62da4e8a536e78d51a8e0ce01be69e6056",
     "Sources/BundledWeb/app.js": "7d6a21881618d5a16846b4a839344c26ac8b570861bba3f603c085473379553e",
     "Sources/BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
-    "project.yml": "808064ab45dc0401c2261869922903b07f4c8129debb1d576f2330819593396e",
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "93cff5cc90cbb3f1e4da8a2830a41ab380b55b5b494ee1bcf254d09b53798bc4"
+    "project.yml": "e544b547f86f49bdca20df1db4c934e340b167405cffb3ee8d6dc60e956a4f78",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "5714469bdb9df6adbb89f3d0987ead0d85aeae558b1d7df0209cdcec8665f665",
+    "Sources/MessagePushNotifications.swift": "039787501850ebe40509e596ffe7bc33ac9ed3e71ec9a150992487e0547ed7e7",
+    "Sources/PushNotifications.entitlements": "c02b6682d391e3b3e1f4ea878ddbe317c10c99fd064359b723891591148142c6",
+    "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
+    "Sources/WebPageController.swift": "b4c963ebe1ae58aeb79b47976141fd90a9305f2ce85d8ab859251e3ad1159b8d",
+    "Sources/Info.plist": "4e7167b6c7840f2bfe16d132aafc7d6d66d405d56f4f5b24858db8ab2afe2a47",
+    "Sources/BundledWeb/ios-push-bridge.js": "e98012316679e181a75fc9cf2a4b01282c4190598958a37eccd5c4ab3e04c5ec"
   }
 }

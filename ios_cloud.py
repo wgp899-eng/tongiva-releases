@@ -1,8 +1,8 @@
 """Check registered devices and publish a verified, newly signed iOS release."""
 from __future__ import annotations
-import argparse,base64,hashlib,json,os,re,signal,subprocess,tempfile,time,urllib.error,urllib.parse,urllib.request
+import argparse,base64,datetime as dt,hashlib,json,os,plistlib,re,signal,subprocess,tempfile,time,urllib.error,urllib.parse,urllib.request,zipfile
 from pathlib import Path
-from ios_resign import resign,extract,ASSET_ROOT,BUNDLE_ID
+from ios_resign import resign,extract,profile,device_hash,ASSET_ROOT,BUNDLE_ID,TEAM_ID
 REPO='wgp899-eng/tongiva-releases'
 API='https://api.github.com'
 FEED=ASSET_ROOT+'ios-update.json'
@@ -90,6 +90,30 @@ def verify_source_snapshot(root,ipa,build):
         if path.is_absolute() or '..' in path.parts or hashlib.sha256((destination/path).read_bytes()).hexdigest()!=digest:
             raise ValueError('Source snapshot file mismatch')
     print('Verified client source snapshot: '+asset['name'])
+
+def signing_profile(root,ipa,provision):
+    target=root/'current.mobileprovision'
+    target.write_bytes(base64.b64decode(provision['profileBase64'],validate=True));target.chmod(0o600)
+    with zipfile.ZipFile(ipa) as archive:
+        info=plistlib.loads(archive.read('Payload/LiaoqiaoWeb.app/Info.plist'))
+        environment=info.get('APNSEnvironment')
+        if environment is None:return target
+        if environment!='production':raise ValueError('Expected production APNs source package')
+        if profile(target).get('Entitlements',{}).get('aps-environment')=='production':return target
+        # The bridge can still cache a profile created before Push Notifications
+        # was enabled. Use the verified source profile only for the exact same
+        # current device set. A changed device list requires a fresh bridge profile.
+        candidate=root/'source.mobileprovision'
+        candidate.write_bytes(archive.read('Payload/LiaoqiaoWeb.app/embedded.mobileprovision'));candidate.chmod(0o600)
+    value=profile(candidate);allowed=value.get('Entitlements',{});devices=value.get('ProvisionedDevices',[])
+    if (value.get('TeamIdentifier')!=[TEAM_ID] or value.get('ProvisionsAllDevices') or
+        allowed.get('application-identifier')!=TEAM_ID+'.'+BUNDLE_ID or allowed.get('get-task-allow') is not False or
+        allowed.get('aps-environment')!='production' or not devices or
+        len(devices)!=provision['deviceCount'] or device_hash(devices)!=provision['deviceSetSHA256'] or
+        value['ExpirationDate'].replace(tzinfo=dt.timezone.utc)<=dt.datetime.now(dt.timezone.utc)):
+        raise ValueError('A current APNs profile for all registered devices is required')
+    print('Using verified APNs source profile for the unchanged registered device set')
+    return candidate
 
 def feature_source():
     name=os.environ.get('IOS_SOURCE_IPA','').strip()
@@ -182,7 +206,7 @@ def main():
         if received!=source['size'] or digest.hexdigest()!=source['sha256']:raise ValueError('Source package digest mismatch')
         verify_source_snapshot(root,ipa,source['build'])
         provision=bridge('profile '+state['registeredDeviceSetSHA256'])
-        profile_path=root/'current.mobileprovision';profile_path.write_bytes(base64.b64decode(provision['profileBase64'],validate=True));profile_path.chmod(0o600)
+        profile_path=signing_profile(root,ipa,provision)
         notes=feature['releaseNotes'] if feature else (base.get('releaseNotes') or '保留现有客户端功能，完善设备安装支持。').strip()+'\n更新设备安装支持。'
         reserved=[int(match.group(1)) for asset in release()['assets']
             if (match:=re.fullmatch(r'Tongiva-iOS-v(\d+)\.ipa',asset['name']))]

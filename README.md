@@ -8,7 +8,7 @@ release notes, and SHA-256 hashes. The v113 source includes Telegram translation
 below both received and sent messages, current native iPad/account fixes, and the
 LINE synchronization resources already released in v112.
 
-The matching `Tongiva-iOS-source-v113.zip` on the `ios-updates` Release contains
+The matching `Tongiva-iOS-source-v115.zip` on the `ios-updates` Release contains
 the Swift project, Telegram Web source, licenses, and prebuilt web resources. It
 excludes local credentials, profiles, user settings, dependencies, and caches.
 The feature IPA is built from that source and exported for distribution. The
@@ -31,3 +31,5 @@ repository's Latest release are independent of the iOS channel.
 For a later feature update, upload a new versioned source ZIP and IPA, update
 `ios-client-source.json` with their hashes and matching resource/source hashes,
 then run the workflow. Keep old packages and update manifests for existing users.
+
+APNs signing preserves the source app entitlements. If the bridge still caches a profile issued before Push Notifications was enabled, the verified source IPA profile can be used only while it is valid and exactly matches all currently registered devices. A changed device list requires a new profile with production APNs capability. The APNs private key stays on the business server and is never uploaded to this repository or Release.
