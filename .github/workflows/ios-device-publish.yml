@@ -3,6 +3,11 @@ run-name: iOS device signing · ${{ github.run_number }}
 on:
   workflow_dispatch:
     inputs:
+      use_configured_source:
+        description: Publish the verified client source configured in ios-client-source.json
+        required: false
+        default: false
+        type: boolean
       device_hash:
         description: Registered-device fingerprint (server supplied; no device identifiers)
         required: false
@@ -52,6 +57,7 @@ jobs:
           IOS_SOURCE_IPA: ${{ inputs.source_ipa || '' }}
           IOS_SOURCE_SHA256: ${{ inputs.source_sha256 || '' }}
           IOS_RELEASE_NOTES: ${{ inputs.release_notes || '' }}
+          IOS_USE_CONFIGURED_SOURCE: ${{ inputs.use_configured_source && 'true' || 'false' }}
         run: python3 ios_cloud.py check
       - name: Remove temporary connection key
         if: always()
@@ -95,6 +101,7 @@ jobs:
           IOS_SOURCE_IPA: ${{ inputs.source_ipa || '' }}
           IOS_SOURCE_SHA256: ${{ inputs.source_sha256 || '' }}
           IOS_RELEASE_NOTES: ${{ inputs.release_notes || '' }}
+          IOS_USE_CONFIGURED_SOURCE: ${{ inputs.use_configured_source && 'true' || 'false' }}
         run: python3 ios_cloud.py publish
       - name: Remove temporary signing credentials
         if: always()
