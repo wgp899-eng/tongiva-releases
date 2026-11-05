@@ -4,11 +4,12 @@ Tongiva Windows and iOS installation packages and updates.
 ## iOS client source and signing
 
 `ios-client-source.json` pins the current iOS client source archive, feature IPA,
-release notes, and SHA-256 hashes. The v113 source includes Telegram translation
-below both received and sent messages, current native iPad/account fixes, and the
-LINE synchronization resources already released in v112.
+release notes, and SHA-256 hashes. The v117 source fixes Telegram on iPhone:
+the keyboard resizes the chat viewport while its header stays fixed, keeping
+the last message above the composer, including multiline input. It preserves
+two-way translation, production APNs, and the existing iPad/account fixes.
 
-The matching `Tongiva-iOS-source-v115.zip` on the `ios-updates` Release contains
+The matching `Tongiva-iOS-source-v117.zip` on the `ios-updates` Release contains
 the Swift project, Telegram Web source, licenses, and prebuilt web resources. It
 excludes local credentials, profiles, user settings, dependencies, and caches.
 The feature IPA is built from that source and exported for distribution. The

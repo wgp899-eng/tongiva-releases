@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "sourceBuild": 115,
+  "sourceBuild": 117,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v115.ipa",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v115.ipa",
-    "sha256": "44e010d0979ee7982a8f7323ea4118be268b085b62d7630b830ab7999310dd5f",
-    "size": 93565556
+    "name": "Tongiva-iOS-source-v117.ipa",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v117.ipa",
+    "sha256": "58cf052a55951cb784d43bf0ca8cb05b9909d38f428efce2b85c1f5aa0f84ba8",
+    "size": 93565493
   },
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v115.zip",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v115.zip",
-    "sha256": "1bfd3be0e1165f1237724f9dd47cc70a990ee393e4d58366c6f2d1d06eeefb56",
-    "size": 99977368
+    "name": "Tongiva-iOS-source-v117.zip",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v117.zip",
+    "sha256": "d61aa55f0cf28741ee0333da6238af6943a9eb00fa2bd26853d28ca5f0a20901",
+    "size": 99977877
   },
-  "releaseNotes": "新增 LINE、Telegram、WhatsApp 新消息 APNs 通知，提示对应平台收到新消息；点击通知打开对应平台。保留 Telegram 双向翻译、账号隔离、iPad 界面和 LINE 备注同步修复。需允许系统通知，支持现有登记 iPhone、iPad 覆盖安装。",
+  "releaseNotes": "修复 Telegram 聊天中键盘弹出后底部消息被输入框遮挡、群名称和返回键被顶出屏幕的问题；支持多行输入时正确调整聊天区域。保留双向翻译、LINE/Telegram/WhatsApp APNs 通知、账号隔离及 iPad 界面修复。",
   "resourceSHA256": {
     "BundledWeb/app.js": "7d6a21881618d5a16846b4a839344c26ac8b570861bba3f603c085473379553e",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -77,12 +77,12 @@
     "Sources/BundledWeb/manifest.json": "92c0bdd036934b3dd2401d26b5af9f62da4e8a536e78d51a8e0ce01be69e6056",
     "Sources/BundledWeb/app.js": "7d6a21881618d5a16846b4a839344c26ac8b570861bba3f603c085473379553e",
     "Sources/BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
-    "project.yml": "e544b547f86f49bdca20df1db4c934e340b167405cffb3ee8d6dc60e956a4f78",
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "5714469bdb9df6adbb89f3d0987ead0d85aeae558b1d7df0209cdcec8665f665",
+    "project.yml": "8ab1c3610f2cf9fb2e8ecceadd3d63100a1ba9fca09ee82bab9814864726af53",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "403760dbfd9a7b27775df2b382ecd0089795b59999cea25e1656cad679f87522",
     "Sources/MessagePushNotifications.swift": "039787501850ebe40509e596ffe7bc33ac9ed3e71ec9a150992487e0547ed7e7",
     "Sources/PushNotifications.entitlements": "c02b6682d391e3b3e1f4ea878ddbe317c10c99fd064359b723891591148142c6",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
-    "Sources/WebPageController.swift": "b4c963ebe1ae58aeb79b47976141fd90a9305f2ce85d8ab859251e3ad1159b8d",
+    "Sources/WebPageController.swift": "5018c998bb4578471b16aee1309a51483e982dea82ff2ccc62e1dcf1dae7d6f5",
     "Sources/Info.plist": "4e7167b6c7840f2bfe16d132aafc7d6d66d405d56f4f5b24858db8ab2afe2a47",
     "Sources/BundledWeb/ios-push-bridge.js": "e98012316679e181a75fc9cf2a4b01282c4190598958a37eccd5c4ab3e04c5ec"
   }
