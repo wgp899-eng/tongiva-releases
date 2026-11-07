@@ -1,38 +1,13 @@
 # tongiva-releases
+
 Tongiva Windows and iOS installation packages and updates.
 
-## iOS client source and signing
+## iOS source v123: real-device test
 
-`ios-client-source.json` pins the current iOS client source archive, feature IPA,
-release notes, and SHA-256 hashes. The v119 source fixes missing LINE repeat
-badges on iPhone and iPad. The native WKWebView injects the mobile badge module,
-using the same server duplicateReasons as Windows, scoped to the current order,
-account and LINE identity. It covers incoming nonfriends, redraws, delayed account
-responses and transient network failures. It preserves Telegram keyboard layout,
-two-way translation, production APNs and the existing iPad/account fixes.
+Published at the user's request for real-device testing. The LINE badge module reads authoritative duplicate metadata from each dialog where the server supplies it and retains the friends/new-contacts fallback for older servers. It handles phone row wrappers, account scope, refreshes and badge removal. The six reported customer cases remain unmatched in backend evidence; this release does not claim they are fixed. No production backend deployment is included.
 
-The matching `Tongiva-iOS-source-v119.zip` on the `ios-updates` Release contains
-the Swift project, Telegram Web source, licenses, and prebuilt web resources. It
-excludes local credentials, profiles, user settings, dependencies, and caches.
-The feature IPA is built from that source and exported for distribution. The
-Actions runner downloads and verifies the source archive and checks that its
-configured web resources match the IPA before signing.
+`ios-client-source.json` pins `Tongiva-iOS-source-v123.zip`, the source IPA, notes and SHA-256 hashes. The source archive contains the Swift project, Telegram Web source, licenses, tests and bundled resources. Credentials, profiles, customer spreadsheets and debugging captures are excluded.
 
-To publish the configured feature package, run **iOS automatic device signing**
-on `main` with **use_configured_source** enabled and leave the explicit source
-fields empty. The existing Apple signing and distribution secrets remain in
-GitHub Secrets. Signing runs on GitHub's `macos-26` runner; this Mac is not needed
-after the source assets have been uploaded.
+Run **iOS automatic device signing** on `main` with **use_configured_source** enabled and the explicit source fields empty. The existing signing bridge supplies the registered-device profile; the macOS runner verifies the source archive and IPA resources before re-signing and publishing the complete package, then refreshes the distribution server. Signing secrets and production APNs capability remain in the existing configuration.
 
-Scheduled runs keep **use_configured_source** disabled and only re-sign when
-registered devices change. They use the latest published complete IPA and verify
-it against the configured source resources, preventing a return to an older
-client. A feature publication always selects a build greater than the current
-release, source build, and existing versioned packages. Windows assets and the
-repository's Latest release are independent of the iOS channel.
-
-For a later feature update, upload a new versioned source ZIP and IPA, update
-`ios-client-source.json` with their hashes and matching resource/source hashes,
-then run the workflow. Keep old packages and update manifests for existing users.
-
-APNs signing preserves the source app entitlements. If the bridge still caches a profile issued before Push Notifications was enabled, the verified source IPA profile can be used only while it is valid and exactly matches all currently registered devices. A changed device list requires a new profile with production APNs capability. The APNs private key stays on the business server and is never uploaded to this repository or Release.
+Scheduled runs only re-sign when registered devices change, using the latest published full IPA and verifying it against the pinned resource hashes. Source updates use new versioned ZIP/IPA assets and a new configuration; old packages and manifests are retained. The iOS channel does not change the Windows Latest release.
