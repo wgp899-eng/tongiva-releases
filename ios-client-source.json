@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "sourceBuild": 125,
+  "sourceBuild": 127,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v125.ipa",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v125.ipa",
-    "sha256": "02c707d9ed5d4c340478adae2988858fe079edf4b0b0034cb5a74544cc0c5a5f",
-    "size": 93570773
+    "name": "Tongiva-iOS-source-v127.ipa",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v127.ipa",
+    "sha256": "64e5678138face71c1abc1ccb866f3d4cc422efc780535241b23749f2769d1b7",
+    "size": 93597385
   },
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v125.zip",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v125.zip",
-    "sha256": "17a64e9d3492585674ab4c7166084352c0f6083954bff7a8c1dc6e74e6c056f1",
-    "size": 99988832
+    "name": "Tongiva-iOS-source-v127.zip",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v127.zip",
+    "sha256": "f5ff093fe982f4e31eb8bf570746c8b3a7d00c683f532256d8b7c0ddc803bda1",
+    "size": 100000649
   },
-  "releaseNotes": "LINE 客户页支持点好友头像或姓名查看资料，再点「聊天」进入对应会话。资料页左上角采用半透明圆形关闭按钮，触屏打开时不再出现白色方框。",
+  "releaseNotes": "iPhone 的 LINE 私聊会显示未添加好友提示，可直接添加，确认成功后自动收起。iPhone 发现 Tongiva 新版本时，会等键盘收起并连续 3 秒无操作后显示原生弹窗，支持滑动下载和延后提醒。",
   "resourceSHA256": {
     "BundledWeb/app.js": "d2f366b2c4d06bae90dc10649f5a72311e3da64169d0c784ae6088fa951543bc",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -62,12 +62,13 @@
     "BundledWeb/xls-reader.min.js": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
     "BundledWeb/xls-worker.js": "51703a14b3c465c2b37d280858375e9d8c5c4bb40cb8488dae8405111af3725e",
     "BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
-    "BundledWeb/manifest.json": "0f0a87ef61197fef0c12f55fe266b47912203bacad4ff3adc966b5aa2cb2caf2",
+    "BundledWeb/manifest.json": "383f9d2a450ed3ad6294372b358e81321d8e73bcf361739b51684be5bc84d74f",
     "TelegramWeb/index.html": "3f7be9b04fae1b9c71d736bcd031f57cc90514d5e75e547b924bcfa5d3db0b7b",
     "TelegramWeb/assets/main-Ce72leB9.js": "792d86c60af540870a019c96deb6b98c795521ff6120fcab5f988e0a1c043b5c",
     "TelegramWeb/assets/main-VzR9MlAd.css": "1b8cff144e929b9927a2b3a2fe870f0631585810d3e987515dfb604a4040dbe9",
     "BundledWeb/ios-push-bridge.js": "e98012316679e181a75fc9cf2a4b01282c4190598958a37eccd5c4ab3e04c5ec",
-    "BundledWeb/ios-line-repeat-badges.js": "179ab343cf38af1dd2c05328ec7b7a472e3dbedb709a33b8741bb527cbc222e2"
+    "BundledWeb/ios-line-repeat-badges.js": "179ab343cf38af1dd2c05328ec7b7a472e3dbedb709a33b8741bb527cbc222e2",
+    "BundledWeb/ios-line-chat-friend.js": "ffe9018f5fbef40a4248df1ca1ed41982c8b3434906f2f24bd56c63db0b749ca"
   },
   "sourceSHA256": {
     "TelegramWebSource/src/components/middle/message/Message.tsx": "b1ee6aa87bb8f65caac30e81588e0917c0b1b4484c89a27bc209616215deb33f",
@@ -75,19 +76,25 @@
     "Sources/BundledWeb/telegram-web-translation.js": "b24fabd947e46b72a209a21bde2c832d6aed35b82f966a4ef93546005931fe62",
     "Sources/BundledWeb/telegram-translation-bridge.js": "ccf71893babd9f23b9477245cbc678000f8e4d1877da23e1218c9f888085c317",
     "Sources/BundledWeb/workbench-translation-bridge.js": "c7bfd1855fd4c9270414feb5b33d72324c3649d3b58ed88e4203a7e34f7a699f",
-    "Sources/BundledWeb/manifest.json": "0f0a87ef61197fef0c12f55fe266b47912203bacad4ff3adc966b5aa2cb2caf2",
+    "Sources/BundledWeb/manifest.json": "383f9d2a450ed3ad6294372b358e81321d8e73bcf361739b51684be5bc84d74f",
     "Sources/BundledWeb/app.js": "d2f366b2c4d06bae90dc10649f5a72311e3da64169d0c784ae6088fa951543bc",
     "Sources/BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
-    "project.yml": "52956c5a5fdc077015dd604c779c3c943a48ae33bd9b1f8485fee578294607d5",
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "5ccb90b1cabd90177b8afabbf6170fca318ae3f932d9e019959f8f0b0936bf93",
+    "project.yml": "8588f3568a444987076b5f18e340cda24e00ece6c4ac5ac5a0c86195db36e717",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "ba088913d179dcb69528468efc74a810306f4f0622e0f3d8753e76fcead811a0",
     "Sources/MessagePushNotifications.swift": "039787501850ebe40509e596ffe7bc33ac9ed3e71ec9a150992487e0547ed7e7",
     "Sources/PushNotifications.entitlements": "c02b6682d391e3b3e1f4ea878ddbe317c10c99fd064359b723891591148142c6",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
-    "Sources/WebPageController.swift": "2d98e2072de6b252f50f71e51400ca3312ba0aa0077ba09abdedba6009d78bc9",
+    "Sources/WebPageController.swift": "daceadc86f6099f8f554620609f9d9af90e55826d77964db57764e7f8b050874",
     "Sources/Info.plist": "4e7167b6c7840f2bfe16d132aafc7d6d66d405d56f4f5b24858db8ab2afe2a47",
     "Sources/BundledWeb/ios-push-bridge.js": "e98012316679e181a75fc9cf2a4b01282c4190598958a37eccd5c4ab3e04c5ec",
     "Sources/BundledWeb/ios-line-repeat-badges.js": "179ab343cf38af1dd2c05328ec7b7a472e3dbedb709a33b8741bb527cbc222e2",
     "Tests/LineRepeatBadgesBrowserTests.mjs": "dc6e6b1974d744de37111c2638f29a9a2bdb042f97c674b5c454c7db2ec026bb",
-    "Sources/BundledWeb/style.css": "9981f30bc8235d23d4be2668105fefa56627eec19859e67bdfe4f4d494495c70"
+    "Sources/BundledWeb/style.css": "9981f30bc8235d23d4be2668105fefa56627eec19859e67bdfe4f4d494495c70",
+    "Tests/AppUpdateServiceTests.swift": "306d9bed28b5cbef75b20bf6a5bb950ef5b52316b417d339053711aeded2d063",
+    "Sources/PhoneAppUpdate.swift": "0a7e51873db1d1cf2b2ab2301beab6f798e25dc884bb542c5f4a731ebc138d54",
+    "Sources/AppUpdateService.swift": "dad82fe0ec328a507098cc2ef8b4756a12a00d0ea02717e19ce8e6097732edfd",
+    "Sources/SceneDelegate.swift": "86d4757e28b6976c05a68e819a0c4ae460231859826e2178e99f7cae877f27c1",
+    "Sources/BundledWeb/ios-line-chat-friend.js": "ffe9018f5fbef40a4248df1ca1ed41982c8b3434906f2f24bd56c63db0b749ca",
+    "Tests/LineChatFriendBrowserTests.mjs": "ce7770ff272f608aedacd46c16a10080858dfbb1c7ce6be1f2582bed5101545d"
   }
 }
