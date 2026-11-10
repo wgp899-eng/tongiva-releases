@@ -1,7 +1,7 @@
 {
-  "releaseNotes": "补强 LINE 客户添加来源采集。工作台前台、切换账号和网络恢复时会补查，服务器独立保存查到的用户名、手机号或二维码来源。",
+  "releaseNotes": "修复 iPhone 和 iPad 上 LINE 登录二维码可能长时间停在生成中的问题。扫码登录使用当前设备的网络出口，遇到短暂的连接波动会自动重试。",
   "resourceSHA256": {
-    "BundledWeb/app.js": "fc21cd4098338dfc3b3e060fdb7260f10bbf4bce44d9a4578d249c979e40d5ee",
+    "BundledWeb/app.js": "c536639d89fff056498252967141e8ec7438d121e0c0f37fcc8957d5ed2f274f",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
     "BundledWeb/billing-compact.js": "c5aa39ec22920a0d7f866cb0ef9ab02fd810d57cb3bab35bb2fe191097b45069",
     "BundledWeb/business-orders-admin.js": "2a77d8cda976931f80d17b739ebf33c15081bd44ccb86ca5211a75cf42f6f983",
@@ -66,23 +66,23 @@
   },
   "schemaVersion": 1,
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v133.zip",
-    "sha256": "bacef9a45a6c07c874c74964fdf4b590a1b9f0d5c82dfd0d5f51160633ce034d",
-    "size": 100405608,
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v133.zip"
+    "name": "Tongiva-iOS-source-v135.zip",
+    "sha256": "fa7532ea2a910a962609ee5c2e919a365a791b448fe3426cd82635b205e038d7",
+    "size": 100136421,
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v135.zip"
   },
-  "sourceBuild": 133,
+  "sourceBuild": 135,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v133.ipa",
-    "sha256": "20c01ed339a4770cd2f3a5bb6576fc1704cd7707523d8d56dc317224153b86ba",
-    "size": 93622532,
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v133.ipa"
+    "name": "Tongiva-iOS-source-v135.ipa",
+    "sha256": "3a5ab5b005c9f9b8cc458ae44a1a0101435b036fbb70009003b20534b7db82c8",
+    "size": 93161951,
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v135.ipa"
   },
   "sourceSHA256": {
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "4152d0f6d4f0764a6e627e9bb7344c60d02ff6119ce116ce144aab2850b9bfcb",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "f2dd0073495d7aa04594b54c703f7c02feab5a98180d72f57e14b0020486860c",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
     "Sources/AppUpdateService.swift": "dad82fe0ec328a507098cc2ef8b4756a12a00d0ea02717e19ce8e6097732edfd",
-    "Sources/BundledWeb/app.js": "fc21cd4098338dfc3b3e060fdb7260f10bbf4bce44d9a4578d249c979e40d5ee",
+    "Sources/BundledWeb/app.js": "c536639d89fff056498252967141e8ec7438d121e0c0f37fcc8957d5ed2f274f",
     "Sources/BundledWeb/ios-assigned-leads-style.js": "283302ea90895c84a65e9e19abf638d13d5c8101d720e48df9e24faf5787efa7",
     "Sources/BundledWeb/ios-client-instances-style.js": "0bff2f60d723e1b8e860cac1da4fd8a625cd0db088426724b78a276343fae4fd",
     "Sources/BundledWeb/ios-customers-style.js": "3b75c62758716edf01e9bfd8c5fe62057f61b27b1c7b60cab29645e075ce14f7",
@@ -101,6 +101,7 @@
     "Sources/BundledWeb/telegram-web-translation.js": "b24fabd947e46b72a209a21bde2c832d6aed35b82f966a4ef93546005931fe62",
     "Sources/BundledWeb/workbench-translation-bridge.js": "c7bfd1855fd4c9270414feb5b33d72324c3649d3b58ed88e4203a7e34f7a699f",
     "Sources/ChatOpsFunctionCoordinator.swift": "31082ec60f5fb4b15bfadc1e64793a3309bfbfc686e13efe14662ac590fea5af",
+    "Sources/DeviceEgressRelay.swift": "a0c74c1fdc47982c2e5fa82c1004a6cb652c0d27ac7e625ef80e2510b31cd28b",
     "Sources/Info.plist": "4e7167b6c7840f2bfe16d132aafc7d6d66d405d56f4f5b24858db8ab2afe2a47",
     "Sources/MessagePushNotifications.swift": "039787501850ebe40509e596ffe7bc33ac9ed3e71ec9a150992487e0547ed7e7",
     "Sources/PhoneAppUpdate.swift": "7b22bb1c02c5b64d5f428bc4b7c715c7536e4fb2fa46c5ae9595675b677af30d",
@@ -112,6 +113,6 @@
     "Tests/LineChatFriendBrowserTests.mjs": "ce7770ff272f608aedacd46c16a10080858dfbb1c7ce6be1f2582bed5101545d",
     "Tests/LineRepeatBadgesBrowserTests.mjs": "dc6e6b1974d744de37111c2638f29a9a2bdb042f97c674b5c454c7db2ec026bb",
     "Tests/LineReplyFocusBrowserTests.mjs": "d8e36d31185c1c307de38d58396bf4d876996061b0d50314efc92d7b6ad33610",
-    "project.yml": "810df326fcbb8cb5bad61d265ae7653677181ebda25ad6b4cddcd9fcf6e7b2f8"
+    "project.yml": "16a6d55e8f50e7202d339e63db70b1cc516a98a6d43a1f42210c3800148c9a74"
   }
 }
