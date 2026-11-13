@@ -1,5 +1,5 @@
 {
-  "releaseNotes": "修复 iPhone 和 iPad 上 LINE 登录二维码可能长时间停在生成中的问题。扫码登录使用当前设备的网络出口，遇到短暂的连接波动会自动重试。",
+  "releaseNotes": "修复 LINE 聊天复制：长按消息后点“复制”，可在文字选择窗口中拖动选择原文、已显示译文或任意片段，也支持全选。复制失败可保留范围重试，新消息刷新不影响选择及输入草稿。",
   "resourceSHA256": {
     "BundledWeb/app.js": "c536639d89fff056498252967141e8ec7438d121e0c0f37fcc8957d5ed2f274f",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -28,11 +28,12 @@
     "BundledWeb/jsQR.js": "bc40c8a15196236b2314db0856f72ca0b49980cd5413b8c852a7349f5fee0859",
     "BundledWeb/line-add-friend-ui.js": "48e1e799d57f16185a7bdd6a89f7dabadc2f273300252a7a9ea03597d182a873",
     "BundledWeb/line-dialog-actions.js": "ddb9654989a7514df532955cb566d6ba3e875e09e620cedebe88db9fd35e038f",
-    "BundledWeb/line-long-press.js": "bd40b09ae9552d1f957168249ec3db39a3782dde4aac313b210dbe675deb0a44",
+    "BundledWeb/line-long-press.js": "9939eaf084ede0afc769570e1905c0c2385e2f687b4c7ad31f307e1d858b1677",
     "BundledWeb/line-message-actions.js": "5d98c1362d506da1276519cb6e0d2fd3a0e1dc5b56817818841e0dea6c333ecf",
     "BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
     "BundledWeb/line-source-sync.js": "66667bc126b46c6adad18d46b8d019d0d79a694b3e1b44595f1b13838a2e83b2",
-    "BundledWeb/manifest.json": "06aa6004bf804e48d18f20bf6dd5a33f1fd729b548c4415ad18c845ed7125557",
+    "BundledWeb/line-sync-release.json": "9905c6c543e6140cee640e5cf6cf2686e0241cdf289d82d37d11e95fb13d2780",
+    "BundledWeb/manifest.json": "b8732eb8dca334571626680a9ae50a77675429638736961d04f28c4bf9e481a6",
     "BundledWeb/operations-ui.js": "bcea668ef3918199a1bb220af08837b6d92d9df5fe4b575775de0061aa157840",
     "BundledWeb/payment-admin.js": "95972d0bc728e0823c0b002fd74a4be4d41c9f34951a9cf2423498797e5cc05a",
     "BundledWeb/payment-qr.js": "2b72ecb8ca05dc35fc47577dc22a050d730a5b949c65a290919125c830943d16",
@@ -43,6 +44,7 @@
     "BundledWeb/phrase-import-compat.js": "77d6dd585fb09d6916f83af07e8c838070be03f39e6b75dd01c02a293114f546",
     "BundledWeb/phrase-transfer.js": "9ab9b6a95ae79768b21946a79283cd2f4c4b438f7492ea198bc8c3e662a48f60",
     "BundledWeb/phrase-ui.js": "c064c87c6c363171e2dc03311a6f4a96a8a385f02764b20b9fd8c17132c84a25",
+    "BundledWeb/server-assets.json": "47399df0ae41ba57fb1f279283c5decb6dd61a3066ecf5cfb97a67e681ed1cc5",
     "BundledWeb/showcase.css": "231e09e3aab034ec4c1d2584fe1c2ebe599a5373d2a2a98856c92e99fe9f75a8",
     "BundledWeb/style.css": "6784ed17e0b2d3ae65f877e5f1442729a8a1860520b91e2d657fd67d22304dcc",
     "BundledWeb/telegram-translation-bridge.js": "ccf71893babd9f23b9477245cbc678000f8e4d1877da23e1218c9f888085c317",
@@ -66,20 +68,20 @@
   },
   "schemaVersion": 1,
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v135.zip",
-    "sha256": "fa7532ea2a910a962609ee5c2e919a365a791b448fe3426cd82635b205e038d7",
-    "size": 100136421,
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v135.zip"
+    "name": "Tongiva-iOS-source-v137.zip",
+    "size": 100048523,
+    "sha256": "d7e27f4a8595a1bd498fa6ed94133607912a139cf5b193340544433d5374f1c4",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v137.zip"
   },
-  "sourceBuild": 135,
+  "sourceBuild": 137,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v135.ipa",
-    "sha256": "3a5ab5b005c9f9b8cc458ae44a1a0101435b036fbb70009003b20534b7db82c8",
-    "size": 93161951,
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v135.ipa"
+    "name": "Tongiva-iOS-source-v137.ipa",
+    "size": 93625330,
+    "sha256": "a042204117795b52526e1cd2116f1471fd10d34fef601ea29cecd455fd6876ee",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v137.ipa"
   },
   "sourceSHA256": {
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "f2dd0073495d7aa04594b54c703f7c02feab5a98180d72f57e14b0020486860c",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "ac11efc0d6eaa22e190d99b6062c63ef94bed949da5eebddfea0f1f9e71c60ba",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
     "Sources/AppUpdateService.swift": "dad82fe0ec328a507098cc2ef8b4756a12a00d0ea02717e19ce8e6097732edfd",
     "Sources/BundledWeb/app.js": "c536639d89fff056498252967141e8ec7438d121e0c0f37fcc8957d5ed2f274f",
@@ -93,9 +95,10 @@
     "Sources/BundledWeb/ios-line-reply-focus.js": "4a832303870e363e8f74495c1c1ef2635b3993af3d6bba328b6bdaa534fed4de",
     "Sources/BundledWeb/ios-phone-menu-style.js": "de5dafc83d72a0ce07ea40b6ea5d49912b381e927bc1c311ced2cbadb745f61d",
     "Sources/BundledWeb/ios-push-bridge.js": "e98012316679e181a75fc9cf2a4b01282c4190598958a37eccd5c4ab3e04c5ec",
+    "Sources/BundledWeb/line-long-press.js": "9939eaf084ede0afc769570e1905c0c2385e2f687b4c7ad31f307e1d858b1677",
     "Sources/BundledWeb/line-note-sync.js": "e1274e2dfbb6e0bcc7780cf6c086b909130c130d266e885797d330b69daf45c4",
     "Sources/BundledWeb/line-source-sync.js": "66667bc126b46c6adad18d46b8d019d0d79a694b3e1b44595f1b13838a2e83b2",
-    "Sources/BundledWeb/manifest.json": "06aa6004bf804e48d18f20bf6dd5a33f1fd729b548c4415ad18c845ed7125557",
+    "Sources/BundledWeb/manifest.json": "b8732eb8dca334571626680a9ae50a77675429638736961d04f28c4bf9e481a6",
     "Sources/BundledWeb/style.css": "6784ed17e0b2d3ae65f877e5f1442729a8a1860520b91e2d657fd67d22304dcc",
     "Sources/BundledWeb/telegram-translation-bridge.js": "ccf71893babd9f23b9477245cbc678000f8e4d1877da23e1218c9f888085c317",
     "Sources/BundledWeb/telegram-web-translation.js": "b24fabd947e46b72a209a21bde2c832d6aed35b82f966a4ef93546005931fe62",
@@ -111,8 +114,9 @@
     "TelegramWebSource/src/components/middle/message/Message.tsx": "b1ee6aa87bb8f65caac30e81588e0917c0b1b4484c89a27bc209616215deb33f",
     "Tests/AppUpdateServiceTests.swift": "306d9bed28b5cbef75b20bf6a5bb950ef5b52316b417d339053711aeded2d063",
     "Tests/LineChatFriendBrowserTests.mjs": "ce7770ff272f608aedacd46c16a10080858dfbb1c7ce6be1f2582bed5101545d",
+    "Tests/LineCopySelectionBrowserTests.mjs": "074fa4e6b36474efe3cf1633d0de284c7149deac0eb7516ae8f598b6317effff",
     "Tests/LineRepeatBadgesBrowserTests.mjs": "dc6e6b1974d744de37111c2638f29a9a2bdb042f97c674b5c454c7db2ec026bb",
     "Tests/LineReplyFocusBrowserTests.mjs": "d8e36d31185c1c307de38d58396bf4d876996061b0d50314efc92d7b6ad33610",
-    "project.yml": "16a6d55e8f50e7202d339e63db70b1cc516a98a6d43a1f42210c3800148c9a74"
+    "project.yml": "7c9340a7c4f55b03680f137f1ff9a80b15df8812605e46ebc3d7000631cdaf8c"
   }
 }
