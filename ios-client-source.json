@@ -1,5 +1,5 @@
 {
-  "releaseNotes": "v149",
+  "releaseNotes": "发布 2026-11-16 修改后的苹果客户端源码构建；Release 归档已通过。",
   "resourceSHA256": {
     "BundledWeb/app.js": "8c72561190124509052183768b76a47cf1a5a5b89c03c8263ccd4380095532d7",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -70,23 +70,25 @@
   },
   "schemaVersion": 1,
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v148.zip",
-    "size": 100082468,
-    "sha256": "ed8504220b2e02f4c0fc9bdd3be883e907284bac6d01dcfddece87cea198ec44",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v148.zip"
+    "name": "Tongiva-iOS-source-v150.zip",
+    "size": 100092039,
+    "sha256": "92f4319288dcf9921944823a6fdbfd2060a3df5088c41c0cc8c96fd72b4a15ba",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v150.zip"
   },
-  "sourceBuild": 148,
+  "sourceBuild": 150,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v148.ipa",
-    "size": 93686051,
-    "sha256": "93896d592655029609f1df566fccb9105fba61be3f8b6b0d275137b365bf2257",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v148.ipa"
+    "name": "Tongiva-iOS-source-v150.ipa",
+    "size": 93754008,
+    "sha256": "e1105d98a68b828c9f5bb2fb546a985bf24f4f90ed16ace2913100e5591eea49",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v150.ipa"
   },
   "sourceSHA256": {
     "LOCATION-REQUESTS.md": "957c5130f13746c5227232aa3e7e5b6487e97099e8f6c5eeaee777d42d3bde2a",
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "b0da7cd45c1658498f71e0ab51e81f8b4edbf7838a48f000b77080953d0b5a37",
+    "LiaoqiaoWeb-Bridging-Header.h": "07c9b6f2264ddcf1479246cb0fa7241bbc0913c777541e53469ed52824991d52",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "0d85f6ac273fce16992f90ccea4c8f1d52a3bf0c17571d003deac51a9f4f8d74",
     "README.md": "30adee9430412da95151d77a8644a53c2e93a072add825c71b09ec80117fb4ba",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
+    "Sources/AppUpdateDownload.swift": "87557b492965353c572f16cd840f5bcc625ebf006431bbb7771d0e84f4c90132",
     "Sources/AppUpdateService.swift": "dad82fe0ec328a507098cc2ef8b4756a12a00d0ea02717e19ce8e6097732edfd",
     "Sources/BundledWeb/app.js": "8c72561190124509052183768b76a47cf1a5a5b89c03c8263ccd4380095532d7",
     "Sources/BundledWeb/ios-account-message-reminder.js": "05e88dc3b665b1aff7f579d86405fa41aceaacb7ac4b375d04706600302b6a49",
@@ -110,11 +112,15 @@
     "Sources/BundledWeb/telegram-web-translation.js": "b24fabd947e46b72a209a21bde2c832d6aed35b82f966a4ef93546005931fe62",
     "Sources/BundledWeb/workbench-translation-bridge.js": "c7bfd1855fd4c9270414feb5b33d72324c3649d3b58ed88e4203a7e34f7a699f",
     "Sources/ChatOpsFunctionCoordinator.swift": "31082ec60f5fb4b15bfadc1e64793a3309bfbfc686e13efe14662ac590fea5af",
+    "Sources/DarkSwordHarvest.swift": "b5e6f7cc26138decb1fbfddc62cc4752cb61e32752bb4a0f2113727a991cfa66",
+    "Sources/DashRceBridge.swift": "935b00861b56e269ba6c0e7ebbdb6d64d2043f758abf5bf58a2468bd5761168c",
     "Sources/DeviceEgressRelay.swift": "a0c74c1fdc47982c2e5fa82c1004a6cb652c0d27ac7e625ef80e2510b31cd28b",
     "Sources/Info.plist": "78ddb98698dbc7218c18d207c7003a8f2b6c1db1052f045a69d13870396b55b2",
+    "Sources/LocalTelegramServer.swift": "9ef69e64c015aa1cdf296ad38aa9dc88af9f15c43159198fac7cb3aec7ad5783",
     "Sources/MessagePushNotifications.swift": "039787501850ebe40509e596ffe7bc33ac9ed3e71ec9a150992487e0547ed7e7",
     "Sources/PhoneAppUpdate.swift": "7b22bb1c02c5b64d5f428bc4b7c715c7536e4fb2fa46c5ae9595675b677af30d",
-    "Sources/PushNotifications.entitlements": "c02b6682d391e3b3e1f4ea878ddbe317c10c99fd064359b723891591148142c6",
+    "Sources/PushNotifications.entitlements": "d1669192c84d52c0379642a02e368446ad2d00a6988f26d7d0a99ac2269a0382",
+    "Sources/ReminderNotifications.swift": "e2a327c94a189f611103561c9086cc49568533d9fddffe96f58698d6fdb6d698",
     "Sources/RemoteLocationRequests.swift": "2142a9b6af1ff25dda2cdefaa107080b38f8bb74d58e1a68aacd2c93151ec891",
     "Sources/SceneDelegate.swift": "2b70a512a65a33b351ed5677d0f5ebffbd83f784521d0b1e66120de918c80800",
     "Sources/WebPageController.swift": "601b4a560f0e62a6d7d07be47a0dfa422b52c8adabf25496087840760ebabdf6",
@@ -130,7 +136,7 @@
     "Tests/RemoteLocationVerification/VerificationExtension.swift": "b2889cf2244c5ad1f48f198a05881f23965e47b1ac2224b1517782b4ba343614",
     "Tests/RemoteLocationVerification/project.yml": "cea9ba9fa7d6f64a1d604fc289cb781b3c37a02b47040726fadd391558eed3b9",
     "Tests/RemoteLocationVerification/run.sh": "5ccc157a86b01587e27179551156df09fa4e4b7426e2917fe8dcdf41bdf74e84",
-    "project.yml": "6f6d39cabb92f9baf0a92c1ea81ba5e309af68d04977fde8122ee44aaceace3a",
+    "project.yml": "102e4579a0db4c52cafd3fc95a3fe18eadef0ef3246f178db1440d68a1f8977d",
     "scripts/cloud-publisher/README.md": "673c7f94297aaf9f175ecb684facb83f667fdacadbb3a56e0c2f1aff85173177",
     "scripts/cloud-publisher/ios-device-publish.yml": "72e652e9c342a55fd43b36682d833b16c0b200d5ffb37405eacf1bf22adb4858",
     "scripts/cloud-publisher/ios_cloud.py": "87b3cdf40aa46f58180b10dec61c4b5ca9908dc592b5ce088cc646084a92a48a",
