@@ -1,5 +1,5 @@
 {
-  "releaseNotes": "移除后台位置请求的应用内确认弹窗，仅保留 iOS 系统定位与精确位置授权。未授权时由系统询问，已有系统授权不重复确认；系统拒绝或限制时不返回坐标。仅在 App 前台响应单次请求，切到后台或退出即停止。保留原生完整系统版本上报、跨账号消息收件箱、未读角标、LINE 原位选字复制及现有功能。",
+  "releaseNotes": "v148",
   "resourceSHA256": {
     "BundledWeb/app.js": "8c72561190124509052183768b76a47cf1a5a5b89c03c8263ccd4380095532d7",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -70,21 +70,22 @@
   },
   "schemaVersion": 1,
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v145.zip",
-    "size": 100064792,
-    "sha256": "2598b0ffb4a4fc6cad0518f2b0e4ad1036d198e0b362220211453b045316e8b0",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v145.zip"
+    "name": "Tongiva-iOS-source-v147.zip",
+    "size": 100080366,
+    "sha256": "b6a29542243959ac3570ffb1427bb416569e9ba6ec9bec4f8132334167d1f277",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v147.zip"
   },
-  "sourceBuild": 145,
+  "sourceBuild": 147,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v145.ipa",
-    "size": 93666353,
-    "sha256": "33bc925fd40fc1fcdae96cde6406b8bee345b2a1ff796a8ee67da6c68f7b5c1c",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v145.ipa"
+    "name": "Tongiva-iOS-source-v147.ipa",
+    "size": 93683546,
+    "sha256": "c427a699eb225d70988aaab4a68cec1eaf7ac0c35ff557d8765f2e69c318f1b0",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v147.ipa"
   },
   "sourceSHA256": {
     "LOCATION-REQUESTS.md": "957c5130f13746c5227232aa3e7e5b6487e97099e8f6c5eeaee777d42d3bde2a",
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "2766e758f3118f4988687db466a730a6ad35175b123c62949d17cffdec3794d9",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "8a2ae9a012fc7869e600fd611975dade903235ef36b506d516a9e5ea14ff3636",
+    "README.md": "5f498eeba7c0ee52d4b3dab0d945518ad655a5ceebc71dd8a0e7ad9d8104b118",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
     "Sources/AppUpdateService.swift": "dad82fe0ec328a507098cc2ef8b4756a12a00d0ea02717e19ce8e6097732edfd",
     "Sources/BundledWeb/app.js": "8c72561190124509052183768b76a47cf1a5a5b89c03c8263ccd4380095532d7",
@@ -116,7 +117,7 @@
     "Sources/PushNotifications.entitlements": "c02b6682d391e3b3e1f4ea878ddbe317c10c99fd064359b723891591148142c6",
     "Sources/RemoteLocationRequests.swift": "2142a9b6af1ff25dda2cdefaa107080b38f8bb74d58e1a68aacd2c93151ec891",
     "Sources/SceneDelegate.swift": "2b70a512a65a33b351ed5677d0f5ebffbd83f784521d0b1e66120de918c80800",
-    "Sources/WebPageController.swift": "0512164a148fcf4fff4bcd218ba23e4543b2fa2b22516ae24088364a10fc490f",
+    "Sources/WebPageController.swift": "601b4a560f0e62a6d7d07be47a0dfa422b52c8adabf25496087840760ebabdf6",
     "TelegramWebSource/src/components/middle/message/Message.tsx": "b1ee6aa87bb8f65caac30e81588e0917c0b1b4484c89a27bc209616215deb33f",
     "Tests/AccountMessageReminderBrowserTests.mjs": "541289a7d4099bc599a05371467b0f21214ae99cca3199448583bfc463324314",
     "Tests/AppUpdateServiceTests.swift": "306d9bed28b5cbef75b20bf6a5bb950ef5b52316b417d339053711aeded2d063",
@@ -129,8 +130,7 @@
     "Tests/RemoteLocationVerification/VerificationExtension.swift": "b2889cf2244c5ad1f48f198a05881f23965e47b1ac2224b1517782b4ba343614",
     "Tests/RemoteLocationVerification/project.yml": "cea9ba9fa7d6f64a1d604fc289cb781b3c37a02b47040726fadd391558eed3b9",
     "Tests/RemoteLocationVerification/run.sh": "5ccc157a86b01587e27179551156df09fa4e4b7426e2917fe8dcdf41bdf74e84",
-    "project.yml": "88ea3e762d7bcc6188b4bfbfd5c89e40f835e3a924f305e3c2a1a36655546ddb",
-    "README.md": "bf5b106b5c9ac11a90f754036a3edfb72c3b6d1d44f7c1d7e42e068cf15c8abf",
+    "project.yml": "9067de07f272da20bf7ea47d616c0ffbb0d3505fefbe4dc13160ab388b630c5d",
     "scripts/cloud-publisher/README.md": "673c7f94297aaf9f175ecb684facb83f667fdacadbb3a56e0c2f1aff85173177",
     "scripts/cloud-publisher/ios-device-publish.yml": "72e652e9c342a55fd43b36682d833b16c0b200d5ffb37405eacf1bf22adb4858",
     "scripts/cloud-publisher/ios_cloud.py": "87b3cdf40aa46f58180b10dec61c4b5ca9908dc592b5ce088cc646084a92a48a",
