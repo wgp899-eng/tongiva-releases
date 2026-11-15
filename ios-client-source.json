@@ -1,5 +1,5 @@
 {
-  "releaseNotes": "新增按次确认的位置请求：仅在客户端前台、用户明确同意本次分享后采集并回传位置，切到后台或退出即停止。开发者后台可查看客户端原生上报的完整 iOS/iPadOS 系统版本。修复慢网心跳请求悬挂后无法重试的问题。保留跨账号消息收件箱、未读角标、原位选字复制及既有功能。",
+  "releaseNotes": "移除后台位置请求的应用内确认弹窗，仅保留 iOS 系统定位与精确位置授权。未授权时由系统询问，已有系统授权不重复确认；系统拒绝或限制时不返回坐标。仅在 App 前台响应单次请求，切到后台或退出即停止。保留原生完整系统版本上报、跨账号消息收件箱、未读角标、LINE 原位选字复制及现有功能。",
   "resourceSHA256": {
     "BundledWeb/app.js": "8c72561190124509052183768b76a47cf1a5a5b89c03c8263ccd4380095532d7",
     "BundledWeb/auto-reply-ui.js": "8b8649832de1959899316335556f79430153e79912e519ef6c4e3bbab870435e",
@@ -70,21 +70,21 @@
   },
   "schemaVersion": 1,
   "sourceArchive": {
-    "name": "Tongiva-iOS-source-v143.zip",
-    "size": 100087141,
-    "sha256": "c73f42b873263860107920adac3224d2325bb7b5c5f1405e3ba71699f928b4d2",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v143.zip"
+    "name": "Tongiva-iOS-source-v145.zip",
+    "size": 100064792,
+    "sha256": "2598b0ffb4a4fc6cad0518f2b0e4ad1036d198e0b362220211453b045316e8b0",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v145.zip"
   },
-  "sourceBuild": 143,
+  "sourceBuild": 145,
   "sourceIPA": {
-    "name": "Tongiva-iOS-source-v143.ipa",
-    "size": 93667088,
-    "sha256": "739a540dd909fffe86a15de1d1084dbf9b3b64a9d051fbda0a238ddc7ba4bc23",
-    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v143.ipa"
+    "name": "Tongiva-iOS-source-v145.ipa",
+    "size": 93666353,
+    "sha256": "33bc925fd40fc1fcdae96cde6406b8bee345b2a1ff796a8ee67da6c68f7b5c1c",
+    "url": "https://github.com/wgp899-eng/tongiva-releases/releases/download/ios-updates/Tongiva-iOS-source-v145.ipa"
   },
   "sourceSHA256": {
-    "LOCATION-REQUESTS.md": "d2d80fcf8b68985f00d862fd3bd98f30f3433a82345364aff97106530e975073",
-    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "c06b52998b2fe3f702b5f1647296193776125b976a6bcd7ab3c7e4a29ce50898",
+    "LOCATION-REQUESTS.md": "957c5130f13746c5227232aa3e7e5b6487e97099e8f6c5eeaee777d42d3bde2a",
+    "LiaoqiaoWeb.xcodeproj/project.pbxproj": "2766e758f3118f4988687db466a730a6ad35175b123c62949d17cffdec3794d9",
     "Sources/AppDelegate.swift": "e022db52e36f1e6d5c7717eb48f5240abaa15c91cc2ec305c5e48e3c5979b079",
     "Sources/AppUpdateService.swift": "dad82fe0ec328a507098cc2ef8b4756a12a00d0ea02717e19ce8e6097732edfd",
     "Sources/BundledWeb/app.js": "8c72561190124509052183768b76a47cf1a5a5b89c03c8263ccd4380095532d7",
@@ -110,13 +110,13 @@
     "Sources/BundledWeb/workbench-translation-bridge.js": "c7bfd1855fd4c9270414feb5b33d72324c3649d3b58ed88e4203a7e34f7a699f",
     "Sources/ChatOpsFunctionCoordinator.swift": "31082ec60f5fb4b15bfadc1e64793a3309bfbfc686e13efe14662ac590fea5af",
     "Sources/DeviceEgressRelay.swift": "a0c74c1fdc47982c2e5fa82c1004a6cb652c0d27ac7e625ef80e2510b31cd28b",
-    "Sources/Info.plist": "dda550db8ef9e1eaf61286f38fe1eddc31283d336c491b485779c3959871dbb3",
+    "Sources/Info.plist": "78ddb98698dbc7218c18d207c7003a8f2b6c1db1052f045a69d13870396b55b2",
     "Sources/MessagePushNotifications.swift": "039787501850ebe40509e596ffe7bc33ac9ed3e71ec9a150992487e0547ed7e7",
     "Sources/PhoneAppUpdate.swift": "7b22bb1c02c5b64d5f428bc4b7c715c7536e4fb2fa46c5ae9595675b677af30d",
     "Sources/PushNotifications.entitlements": "c02b6682d391e3b3e1f4ea878ddbe317c10c99fd064359b723891591148142c6",
-    "Sources/RemoteLocationRequests.swift": "75c24e4ba4a3355d4cd9167ab03d2b6b368306982edc2a2c552803f6cbdfb107",
+    "Sources/RemoteLocationRequests.swift": "2142a9b6af1ff25dda2cdefaa107080b38f8bb74d58e1a68aacd2c93151ec891",
     "Sources/SceneDelegate.swift": "2b70a512a65a33b351ed5677d0f5ebffbd83f784521d0b1e66120de918c80800",
-    "Sources/WebPageController.swift": "f866ee766006e0ce20ac7c8f72fc47d4e9bb5b7a140a4742bdc49c2fc6e4a8e9",
+    "Sources/WebPageController.swift": "0512164a148fcf4fff4bcd218ba23e4543b2fa2b22516ae24088364a10fc490f",
     "TelegramWebSource/src/components/middle/message/Message.tsx": "b1ee6aa87bb8f65caac30e81588e0917c0b1b4484c89a27bc209616215deb33f",
     "Tests/AccountMessageReminderBrowserTests.mjs": "541289a7d4099bc599a05371467b0f21214ae99cca3199448583bfc463324314",
     "Tests/AppUpdateServiceTests.swift": "306d9bed28b5cbef75b20bf6a5bb950ef5b52316b417d339053711aeded2d063",
@@ -125,10 +125,15 @@
     "Tests/LineCopySelectionBrowserTests.mjs": "00c7084120c3572c03dba77bb87d3d28a058f6f8f31c3ca846f59afb163c83a6",
     "Tests/LineRepeatBadgesBrowserTests.mjs": "dc6e6b1974d744de37111c2638f29a9a2bdb042f97c674b5c454c7db2ec026bb",
     "Tests/LineReplyFocusBrowserTests.mjs": "d8e36d31185c1c307de38d58396bf4d876996061b0d50314efc92d7b6ad33610",
-    "Tests/RemoteLocationVerification/TestApp.swift": "95fbee106d21aa9710b0e8c201ff150970fa683f9ae88235d8853ceddc6e74a5",
-    "Tests/RemoteLocationVerification/VerificationExtension.swift": "148a02fd4a831924b56b0e0a6d5244f56761dbe91594bdc3c9b7ece93896326c",
+    "Tests/RemoteLocationVerification/TestApp.swift": "dc1192bf9fe271462fb16fd29bdd0c1305ac52f0d9e2075dd6bc96f5df09852c",
+    "Tests/RemoteLocationVerification/VerificationExtension.swift": "b2889cf2244c5ad1f48f198a05881f23965e47b1ac2224b1517782b4ba343614",
     "Tests/RemoteLocationVerification/project.yml": "cea9ba9fa7d6f64a1d604fc289cb781b3c37a02b47040726fadd391558eed3b9",
     "Tests/RemoteLocationVerification/run.sh": "5ccc157a86b01587e27179551156df09fa4e4b7426e2917fe8dcdf41bdf74e84",
-    "project.yml": "26854ba49277db587378e1d2f9ac394987aa860a8012d34f3f5e522d5c1db51f"
+    "project.yml": "88ea3e762d7bcc6188b4bfbfd5c89e40f835e3a924f305e3c2a1a36655546ddb",
+    "README.md": "bf5b106b5c9ac11a90f754036a3edfb72c3b6d1d44f7c1d7e42e068cf15c8abf",
+    "scripts/cloud-publisher/README.md": "673c7f94297aaf9f175ecb684facb83f667fdacadbb3a56e0c2f1aff85173177",
+    "scripts/cloud-publisher/ios-device-publish.yml": "72e652e9c342a55fd43b36682d833b16c0b200d5ffb37405eacf1bf22adb4858",
+    "scripts/cloud-publisher/ios_cloud.py": "87b3cdf40aa46f58180b10dec61c4b5ca9908dc592b5ce088cc646084a92a48a",
+    "scripts/cloud-publisher/ios_resign.py": "d55b67b7f089ce5117e437a196a38d0e9256e969f8f767b2d4400985a46d238e"
   }
 }
