@@ -1,0 +1,40 @@
+name: Source bundle artifact
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag containing source-bundle.zip
+        required: true
+        default: source-20261119
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  upload-source-bundle:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'source-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download the source archive from Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+        run: |
+          gh release download "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern source-bundle.zip \
+            --dir "$RUNNER_TEMP/source-release"
+
+      - name: Save the source archive as an Actions artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: source-bundle-${{ inputs.release_tag || github.event.release.tag_name }}
+          path: ${{ runner.temp }}/source-release/source-bundle.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90
