@@ -499,7 +499,14 @@ def download_public(url: str, target: Path, *, expected_size: int | None = None,
     if parsed.scheme != "https" or not (parsed.hostname in {"github.com", "objects.githubusercontent.com"}
                                         or (parsed.hostname or "").endswith(".githubusercontent.com")):
         raise PipelineError("refusing non-GitHub download destination: " + url)
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Cache-Control": "no-cache"})
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Cache-Control": "no-cache, no-store, max-age=0",
+            "Pragma": "no-cache",
+        },
+    )
     digest = hashlib.sha256()
     received = 0
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -590,21 +597,29 @@ def command_publish(args: argparse.Namespace) -> dict:
         try:
             with tempfile.TemporaryDirectory(prefix="tongiva-old-feed-") as tmp:
                 old_path = Path(tmp) / "ios-update.json"
-                download_public(old_feed["browser_download_url"], old_path)
+                download_public(
+                    old_feed["browser_download_url"] + "?cb=" + str(time.time_ns()),
+                    old_path,
+                )
                 old_build = json.loads(old_path.read_text()).get("build")
         except Exception:  # noqa: BLE001
             old_build = None
-        staged_name = f"ios-update-next-v{build}.json"
-        staged = upload_asset(rel, feed, staged_name, True)
-        archive_name = f"ios-update-v{old_build}.json" if isinstance(old_build, int) else f"ios-update-old-{old_feed['id']}.json"
-        if asset_by_name(rel, archive_name):
-            archive_name = f"ios-update-v{old_build}-snapshot-{old_feed['id']}.json"
-        api("PATCH", f"/repos/{REPO}/releases/assets/{old_feed['id']}", {"name": archive_name})
-        try:
-            api("PATCH", f"/repos/{REPO}/releases/assets/{staged['id']}", {"name": "ios-update.json"})
-        except Exception:
-            api("PATCH", f"/repos/{REPO}/releases/assets/{old_feed['id']}", {"name": "ios-update.json"})
-            raise
+        if old_build == build:
+            # Same build number: replace the feed atomically by name.  Do not
+            # keep a historical feed that would point at the replaced IPA.
+            upload_asset(rel, feed, "ios-update.json", True)
+        else:
+            staged_name = f"ios-update-next-v{build}.json"
+            staged = upload_asset(rel, feed, staged_name, True)
+            archive_name = f"ios-update-v{old_build}.json" if isinstance(old_build, int) else f"ios-update-old-{old_feed['id']}.json"
+            if asset_by_name(rel, archive_name):
+                archive_name = f"ios-update-v{old_build}-snapshot-{old_feed['id']}.json"
+            api("PATCH", f"/repos/{REPO}/releases/assets/{old_feed['id']}", {"name": archive_name})
+            try:
+                api("PATCH", f"/repos/{REPO}/releases/assets/{staged['id']}", {"name": "ios-update.json"})
+            except Exception:
+                api("PATCH", f"/repos/{REPO}/releases/assets/{old_feed['id']}", {"name": "ios-update.json"})
+                raise
     else:
         upload_asset(rel, feed, "ios-update.json", args.overwrite)
 
@@ -625,10 +640,17 @@ def command_publish(args: argparse.Namespace) -> dict:
         try:
             with tempfile.TemporaryDirectory(prefix="tongiva-feed-") as tmp:
                 target = Path(tmp) / "ios-update.json"
-                download_public(ASSET_ROOT + "ios-update.json", target)
+                download_public(
+                    ASSET_ROOT + "ios-update.json?cb=" + str(time.time_ns()),
+                    target,
+                )
                 observed = json.loads(target.read_text())
             if observed.get("build") == build and observed.get("sha256") == expected_digest:
                 break
+            log(
+                f"feed verification attempt {attempt + 1}: "
+                f"build={observed.get('build')} sha256={observed.get('sha256')}"
+            )
         except Exception as error:  # noqa: BLE001
             log(f"feed verification attempt {attempt + 1} failed: {error}")
         time.sleep(5)
