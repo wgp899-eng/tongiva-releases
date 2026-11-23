@@ -1,0 +1,274 @@
+name: iOS build sign publish (macos-latest)
+run-name: iOS CI · ${{ inputs.mode }} · build ${{ inputs.build_number || 'auto' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "build = xcodebuild archive + exportArchive; resign = re-sign an existing release IPA"
+        type: choice
+        options:
+          - build
+          - resign
+        default: build
+      build_number:
+        description: "CFBundleVersion (empty = max existing IPA/feed build + 1)"
+        required: false
+        default: "177"
+      source_asset:
+        description: "Release IPA to re-sign (resign mode only)"
+        required: false
+        default: "Tongiva-iOS-v176.ipa"
+      source_sha256:
+        description: "Expected sha256 of source_asset (resign mode; empty = release asset digest)"
+        required: false
+        default: "2aae3d2e595034efee1890578658b5845cab4b945c241ac633013ef26837c6e1"
+      publish:
+        description: "Upload the IPA/plist/ios-update.json to the ios-updates Release"
+        type: boolean
+        default: false
+      overwrite:
+        description: "Replace same-name assets in the Release"
+        type: boolean
+        default: true
+      release_notes:
+        description: "Notes stored in ios-update.json"
+        required: false
+        default: "GitHub Actions macOS runner: xcodebuild archive + exportArchive + Apple Distribution codesign."
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-build-publish
+  cancel-in-progress: false
+
+jobs:
+  build-sign-publish:
+    name: build + sign + publish on GitHub-hosted macOS
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - name: Runner information (proves this is a macOS signing machine)
+        run: |
+          uname -a
+          sw_vers
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Checkout release/CI repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout private iOS source with read-only deploy key
+        uses: actions/checkout@v4
+        with:
+          repository: wgp899-eng/tongiva-ios-source
+          ref: main
+          path: source
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify frozen LqSyncPolicy.swift
+        run: |
+          set -euo pipefail
+          ACTUAL="$(shasum -a 256 source/Sources/LqSyncPolicy.swift | awk '{print $1}')"
+          EXPECTED="7b1d97fed55e7f15ca3967b2144b0bc7315a55da3e9b753a694300835b56e0ee"
+          echo "LqSyncPolicy.swift sha256=$ACTUAL"
+          test "$ACTUAL" = "$EXPECTED"
+
+      - name: Install Apple Distribution identity and Ad Hoc provisioning profile
+        env:
+          IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
+          IOS_P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+        run: |
+          set -euo pipefail
+          test -n "$IOS_DISTRIBUTION_P12"
+          test -n "$IOS_P12_PASSWORD"
+          test -n "$IOS_PROVISIONING_PROFILE"
+
+          KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -hex 32)"
+          echo "::add-mask::$KEYCHAIN_PASSWORD"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+
+          printf '%s' "$IOS_DISTRIBUTION_P12" | base64 --decode > "$RUNNER_TEMP/signing.p12"
+          security import "$RUNNER_TEMP/signing.p12" -P "$IOS_P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN" >/dev/null
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" >/dev/null
+          security list-keychains -d user -s "$KEYCHAIN" "$HOME/Library/Keychains/login.keychain-db"
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          printf '%s' "$IOS_PROVISIONING_PROFILE" | base64 --decode > "$RUNNER_TEMP/profile.mobileprovision"
+          UUID="$(security cms -D -i "$RUNNER_TEMP/profile.mobileprovision" | plutil -extract UUID raw -)"
+          cp "$RUNNER_TEMP/profile.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+
+          echo "PROFILE_PATH=$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision" >> "$GITHUB_ENV"
+          echo "KEYCHAIN_PATH=$KEYCHAIN" >> "$GITHUB_ENV"
+
+          echo "== codesigning identities =="
+          security find-identity -v -p codesigning
+          security find-identity -v -p codesigning | grep -q 'Apple Distribution: Wei He (5V4M77FFRV)'
+          echo "== distribution certificate fingerprint =="
+          security find-certificate -c "Apple Distribution: Wei He (5V4M77FFRV)" -p | openssl x509 -noout -fingerprint -sha256
+
+      - name: Resolve build number
+        id: build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REQUESTED: ${{ inputs.build_number }}
+        run: |
+          set -euo pipefail
+          REQUESTED="${REQUESTED// /}"
+          if [ -n "$REQUESTED" ]; then
+            BUILD="$REQUESTED"
+          else
+            BUILD="$(python3 ci/ios_pipeline.py next-build)"
+          fi
+          if ! [[ "$BUILD" =~ ^[1-9][0-9]*$ ]]; then
+            echo "invalid build number: $BUILD" >&2
+            exit 1
+          fi
+          echo "number=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "BUILD_NUMBER=$BUILD" >> "$GITHUB_ENV"
+          echo "build number: $BUILD"
+
+      - name: Full build — xcodebuild archive + exportArchive
+        if: inputs.mode == 'build'
+        working-directory: source
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ENTITLEMENTS="$GITHUB_WORKSPACE/source/Sources/PushNotifications.entitlements"
+          ARCHIVE="$RUNNER_TEMP/LiaoqiaoWeb.xcarchive"
+          EXPORT="$RUNNER_TEMP/export"
+          rm -rf "$ARCHIVE" "$EXPORT"
+          mkdir -p "$EXPORT"
+
+          xcodebuild \
+            -project LiaoqiaoWeb.xcodeproj \
+            -scheme LiaoqiaoWeb \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$ARCHIVE" \
+            archive \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=5V4M77FFRV \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="Tongiva Ad Hoc 6 Devices 20261101T025724Z" \
+            CODE_SIGN_ENTITLEMENTS="$ENTITLEMENTS" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            MARKETING_VERSION="1.0"
+
+          if xcodebuild -exportArchive \
+              -archivePath "$ARCHIVE" \
+              -exportPath "$EXPORT" \
+              -exportOptionsPlist "$GITHUB_WORKSPACE/ci/ExportOptions.plist"; then
+            IPA="$(find "$EXPORT" -maxdepth 1 -name '*.ipa' -print -quit)"
+            if [ -n "$IPA" ]; then
+              echo "SOURCE_IPA=$IPA" >> "$GITHUB_ENV"
+              exit 0
+            fi
+          fi
+          echo "exportArchive did not produce an IPA; falling back to the signed archive app" >&2
+          echo "SOURCE_APP=$ARCHIVE/Products/Applications/LiaoqiaoWeb.app" >> "$GITHUB_ENV"
+
+      - name: Download source IPA for re-sign mode
+        if: inputs.mode == 'resign'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 ci/ios_pipeline.py download \
+            --asset "${{ inputs.source_asset }}" \
+            --output "$RUNNER_TEMP/source.ipa" \
+            --sha256 "${{ inputs.source_sha256 }}"
+          echo "SOURCE_IPA=$RUNNER_TEMP/source.ipa" >> "$GITHUB_ENV"
+
+      - name: Re-sign and package IPA + itms-services plist + ios-update.json
+        env:
+          RELEASE_NOTES: ${{ inputs.release_notes }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$RELEASE_NOTES" > "$RUNNER_TEMP/notes.txt"
+          OUT="$RUNNER_TEMP/out"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+          COMMON=(
+            --profile "$PROFILE_PATH"
+            --entitlements "$GITHUB_WORKSPACE/source/Signing/TongivaAdHoc.entitlements"
+            --build "$BUILD_NUMBER"
+            --notes-file "$RUNNER_TEMP/notes.txt"
+            --output "$OUT"
+          )
+          if [ -n "${SOURCE_IPA:-}" ]; then
+            python3 ci/ios_pipeline.py package --source-ipa "$SOURCE_IPA" "${COMMON[@]}"
+          elif [ -n "${SOURCE_APP:-}" ]; then
+            python3 ci/ios_pipeline.py package --app "$SOURCE_APP" "${COMMON[@]}"
+          else
+            echo "no source IPA or app was produced" >&2
+            exit 1
+          fi
+
+      - name: Verify signature, profile, entitlements and sha256
+        run: |
+          set -euo pipefail
+          python3 ci/ios_pipeline.py verify \
+            --ipa "$RUNNER_TEMP/out/Tongiva-iOS-v$BUILD_NUMBER.ipa" \
+            --plist "$RUNNER_TEMP/out/Tongiva-iOS-v$BUILD_NUMBER.plist" \
+            --profile "$PROFILE_PATH" \
+            --entitlements "$GITHUB_WORKSPACE/source/Signing/TongivaAdHoc.entitlements" \
+            --build "$BUILD_NUMBER"
+
+      - name: Publish to ios-updates Release (uploads.github.com)
+        if: ${{ inputs.publish }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.overwrite }}" = "true" ]; then
+            OVERWRITE="--overwrite"
+          else
+            OVERWRITE="--no-overwrite"
+          fi
+          python3 ci/ios_pipeline.py publish \
+            --ipa "$RUNNER_TEMP/out/Tongiva-iOS-v$BUILD_NUMBER.ipa" \
+            --plist "$RUNNER_TEMP/out/Tongiva-iOS-v$BUILD_NUMBER.plist" \
+            --json "$RUNNER_TEMP/out/ios-update.json" \
+            --build "$BUILD_NUMBER" \
+            --notes-file "$RUNNER_TEMP/notes.txt" \
+            "$OVERWRITE"
+
+      - name: Verify the published Release end-to-end
+        if: ${{ inputs.publish }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          SHA="$(shasum -a 256 "$RUNNER_TEMP/out/Tongiva-iOS-v$BUILD_NUMBER.ipa" | awk '{print $1}')"
+          python3 ci/ios_pipeline.py verify-release \
+            --build "$BUILD_NUMBER" \
+            --sha256 "$SHA" \
+            --profile "$PROFILE_PATH" \
+            --entitlements "$GITHUB_WORKSPACE/source/Signing/TongivaAdHoc.entitlements"
+
+      - name: Upload workflow artifacts (dry run)
+        if: ${{ !inputs.publish }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tongiva-iOS-v${{ steps.build.outputs.number }}
+          path: ${{ runner.temp }}/out/*
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Remove temporary signing credentials
+        if: always()
+        run: |
+          security delete-keychain "${KEYCHAIN_PATH:-$RUNNER_TEMP/no-such-keychain}" 2>/dev/null || true
+          rm -f "$RUNNER_TEMP/signing.p12" "$RUNNER_TEMP/profile.mobileprovision"
