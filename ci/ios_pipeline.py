@@ -79,6 +79,11 @@ def sha1_bytes(value: bytes) -> str:
     return hashlib.sha1(value).hexdigest().upper()
 
 
+def bust(url: str) -> str:
+    """Add a cache-busting query parameter (GitHub release CDN caches by URL)."""
+    return url + ("&" if "?" in url else "?") + "cb=" + str(time.time_ns())
+
+
 def profile_dict(path: Path) -> dict:
     result = subprocess.run(
         ["security", "cms", "-D", "-i", str(path)],
@@ -537,7 +542,7 @@ def command_download(args: argparse.Namespace) -> dict:
         raise PipelineError("no sha256 available; pass --sha256 explicitly")
     target = Path(args.output)
     actual = download_public(
-        asset["browser_download_url"], target,
+        bust(asset["browser_download_url"]), target,
         expected_size=int(asset["size"]), expected_sha256=expected,
     )
     result = {"asset": args.asset, "id": asset["id"], "size": target.stat().st_size,
@@ -683,14 +688,14 @@ def command_verify_release(args: argparse.Namespace) -> dict:
     with tempfile.TemporaryDirectory(prefix="tongiva-release-") as tmp:
         root = Path(tmp)
         ipa_path = root / ipa["name"]
-        actual = download_public(ipa["browser_download_url"], ipa_path,
+        actual = download_public(bust(ipa["browser_download_url"]), ipa_path,
                                  expected_size=int(ipa["size"]))
         if args.sha256 and actual != args.sha256.lower():
             raise PipelineError("downloaded IPA sha256 does not match the local build")
         plist_path = root / plist["name"]
-        download_public(plist["browser_download_url"], plist_path, expected_size=int(plist["size"]))
+        download_public(bust(plist["browser_download_url"]), plist_path, expected_size=int(plist["size"]))
         feed_path = root / "ios-update.json"
-        download_public(feed["browser_download_url"], feed_path)
+        download_public(bust(feed["browser_download_url"]), feed_path)
         feed_value = json.loads(feed_path.read_text())
         if feed_value.get("build") != build:
             raise PipelineError("release feed build mismatch")
@@ -729,7 +734,7 @@ def command_next_build(args: argparse.Namespace) -> int:
         try:
             with tempfile.TemporaryDirectory(prefix="tongiva-feed-") as tmp:
                 target = Path(tmp) / "ios-update.json"
-                download_public(feed["browser_download_url"], target)
+                download_public(bust(feed["browser_download_url"]), target)
                 builds.append(int(json.loads(target.read_text()).get("build", 0)))
         except Exception:  # noqa: BLE001
             pass
