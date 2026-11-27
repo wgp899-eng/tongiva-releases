@@ -216,6 +216,12 @@ def verify_app(app: Path, profile: dict, expected_entitlements: dict, build: int
 
     run(["codesign", "--verify", "--deep", "--strict", "--verbose=2", app])
     actual_entitlements = entitlements_of(app)
+    # iOS refuses to install a package whose signature lacks the application
+    # identifier taken from the provisioning profile; catch it before publishing.
+    if actual_entitlements.get("application-identifier") != f"{TEAM_ID}.{BUNDLE_ID}":
+        raise PipelineError("signed app is missing application-identifier; iOS would refuse to install it")
+    if actual_entitlements.get("com.apple.developer.team-identifier") != TEAM_ID:
+        raise PipelineError("signed app is missing com.apple.developer.team-identifier")
     if actual_entitlements != expected_entitlements:
         raise PipelineError(
             "signed entitlements do not match the requested entitlements: "
